@@ -516,6 +516,7 @@ body{font-family:'Jost',sans-serif;background:var(--cr);color:var(--ink);min-hei
 .exp-edit-form select,.exp-edit-form input{border:1px solid var(--br);border-radius:var(--rs);padding:10px 12px;font-family:'Jost',sans-serif;font-size:13px;color:var(--ink);background:var(--ms);width:100%;outline:none}
 .flag-toggle{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--ms);border-radius:var(--rs);cursor:pointer;border:1px solid var(--br)}
 .flag-toggle.flagged{background:#fef9ec;border-color:#f59e0b}
+.plan-event-edit{padding:3px 7px;border-radius:4px;border:1px solid var(--br);background:transparent;font-size:11px;color:var(--mu);cursor:pointer;font-family:'Jost',sans-serif}
 </style>
 </head>
 <body>
@@ -651,6 +652,31 @@ body{font-family:'Jost',sans-serif;background:var(--cr);color:var(--ink);min-hei
     <div class="mdl-foot">
       <button class="btn-c" onclick="closeModal('cal-star-modal')">Cancel</button>
       <button class="btn-p" onclick="saveStarredDay()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="ovl" id="plan-edit-modal">
+  <div class="mdl">
+    <div class="mdl-handle"></div>
+    <div class="mdl-title">Edit event</div>
+    <div class="fld"><label>Title</label><input id="pe-title" placeholder="Event title"/></div>
+    <div class="fld-r">
+      <div class="fld"><label>Date</label><input type="date" id="pe-date"/></div>
+      <div class="fld"><label>Time (optional)</label><input id="pe-time" placeholder="e.g. 2pm"/></div>
+    </div>
+    <div class="fld"><label>Type</label>
+      <select id="pe-type">
+        <option value="fixed">📌 Fixed</option>
+        <option value="flexible">🔀 Flexible</option>
+        <option value="intentional">🌿 Intentional</option>
+      </select>
+    </div>
+    <input type="hidden" id="pe-id"/>
+    <div class="mdl-foot">
+      <button class="btn-c" onclick="closeModal('plan-edit-modal')">Cancel</button>
+      <button class="btn-p" style="background:#dc2626;margin-right:auto" onclick="delPlanEventFromEdit()">Delete</button>
+      <button class="btn-p" onclick="savePlanEdit()">Save</button>
     </div>
   </div>
 </div>
@@ -1904,9 +1930,11 @@ function openCalDayModal(iso){
   document.getElementById('cal-day-modal-title').textContent=months[+m-1]+' '+(+d)+', '+y;
   const tripDays=calBuildTripDays();const bdayKeys=calBuildBirthdayDays();
   const mdKey=m+'-'+d;let evHtml='';
-  if(tripDays[iso])tripDays[iso].forEach(t=>{evHtml+='<div class="cal-event-card travel-ev">✈️ <strong>'+t.emoji+' '+t.dest+'</strong></div>';});
+  if(tripDays[iso])tripDays[iso].forEach(t=>{evHtml+='<div class="cal-event-card travel-ev" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div>✈️ <strong>'+t.emoji+' '+t.dest+'</strong></div><div style="display:flex;gap:5px;flex-shrink:0"><button onclick="event.stopPropagation();closeModal(\'cal-day-modal\');openTripModal(\''+t.tripId+'\')" style="border:1px solid rgba(0,0,0,.12);background:transparent;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:\'Jost\',sans-serif;color:#0f5132">✏ Edit</button><button onclick="event.stopPropagation();if(confirm(\'Delete this trip?\'))deleteTrip(\''+t.tripId+'\')" style="border:1px solid #fca5a5;background:transparent;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:\'Jost\',sans-serif;color:#dc2626">✕</button></div></div>';});
   if(bdayKeys[mdKey])evHtml+='<div class="cal-event-card birthday-ev">'+bdayKeys[mdKey]+'</div>';
   (S.calStarred||[]).filter(s=>s.date===iso).forEach(s=>{evHtml+='<div class="cal-event-card starred-ev">⭐ <strong>'+s.label+'</strong>'+(s.comment?'<br><span style="color:var(--mu);font-size:11px">'+s.comment+'</span>':'')+'</div>';});
+  const dayPlanEvents=(S.plannerEvents||[]).filter(e=>e.date===iso);
+  if(dayPlanEvents.length){evHtml+='<div style="margin-top:8px;border-top:1px solid var(--br);padding-top:8px">';dayPlanEvents.forEach(e=>{const color=PLAN_COLORS[e.type]||'#666';evHtml+='<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--ms);border-radius:8px;margin-bottom:5px"><div style="width:8px;height:8px;border-radius:50%;background:'+color+';flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:500">'+(e.time?'<span style="color:var(--mu);font-size:10px;margin-right:5px">'+e.time+'</span>':'')+e.title+'</div><button onclick="event.stopPropagation();closeModal(\'cal-day-modal\');openPlanEdit(\''+e.id+'\')" style="border:none;background:transparent;cursor:pointer;font-size:12px;color:var(--mu);padding:2px 5px;border-radius:4px;border:1px solid var(--br)">✏</button><button onclick="event.stopPropagation();delPlanEvent(\''+e.id+'\');this.closest(\'.cal-event-card-wrap\')&&renderCalendar()" style="border:none;background:transparent;cursor:pointer;font-size:11px;color:#dc2626;padding:2px 5px;border-radius:4px;border:1px solid #fecaca">✕</button></div>';});evHtml+='</div>';}
   document.getElementById('cal-day-event-info').innerHTML=evHtml;
   const noteData=(S.calNotes||{})[iso]||{};
   document.getElementById('cal-day-note-inp').value=noteData.note||'';
@@ -2032,6 +2060,36 @@ function delPlanEvent(id){
   saveAll();renderCalendar();if(planView==='week')renderWeeklyView();
 }
 
+function openPlanEdit(id){
+  if(!S.plannerEvents)return;
+  const ev=S.plannerEvents.find(e=>e.id===id);if(!ev)return;
+  document.getElementById('pe-id').value=id;
+  document.getElementById('pe-title').value=ev.title||'';
+  document.getElementById('pe-date').value=ev.date||'';
+  document.getElementById('pe-time').value=ev.time||'';
+  document.getElementById('pe-type').value=ev.type||'fixed';
+  openModal('plan-edit-modal');
+}
+
+function savePlanEdit(){
+  const id=document.getElementById('pe-id').value;
+  if(!id||!S.plannerEvents)return;
+  const title=document.getElementById('pe-title').value.trim();
+  const date=document.getElementById('pe-date').value;
+  if(!title||!date){alert('Title and date are required');return;}
+  const idx=S.plannerEvents.findIndex(e=>e.id===id);
+  if(idx<0)return;
+  S.plannerEvents[idx]={...S.plannerEvents[idx],title,date,time:document.getElementById('pe-time').value.trim(),type:document.getElementById('pe-type').value};
+  saveAll();closeModal('plan-edit-modal');renderCalendar();if(planView==='week')renderWeeklyView();toast('Event updated ✓');
+}
+
+function delPlanEventFromEdit(){
+  const id=document.getElementById('pe-id').value;
+  closeModal('plan-edit-modal');
+  delPlanEvent(id);
+  toast('Event deleted');
+}
+
 function renderWeeklyView(){
   const el=document.getElementById('planner-weekly-content');if(!el)return;
   const today=new Date();
@@ -2044,12 +2102,12 @@ function renderWeeklyView(){
     const iso=d.toISOString().split('T')[0];
     const isToday=iso===today.toISOString().split('T')[0];
     const dayEvts=events.filter(e=>e.date===iso);
-    const pills=dayEvts.map(e=>'<div class="week-event-pill '+e.type+'" onclick="delPlanEvent(\''+e.id+'\')" title="Tap to delete">'+(e.time?e.time+' ':'')+e.title+'</div>').join('');
+    const pills=dayEvts.map(e=>'<div class="week-event-pill '+e.type+'" onclick="openPlanEdit(\''+e.id+'\')" title="Tap to edit">'+(e.time?e.time+' ':'')+e.title+'</div>').join('');
     return'<div class="week-day-col"><div class="week-day-hdr '+(isToday?'today-col':'')+'">'+DAY_NAMES[i]+'<br>'+d.getDate()+'</div>'+(pills||'<div style="height:6px"></div>')+'</div>';
   }).join('');
   const upcoming=events.filter(e=>e.date>=today.toISOString().split('T')[0]).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
   el.innerHTML='<div style="background:var(--wh);border:1px solid var(--br);border-radius:14px;padding:14px;box-shadow:var(--sh);margin-bottom:12px"><div style="font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">This week</div><div class="weekly-grid">'+cols+'</div></div>'+
-    (upcoming.length?'<div style="background:var(--wh);border:1px solid var(--br);border-radius:14px;padding:14px;box-shadow:var(--sh)"><div style="font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Upcoming</div>'+upcoming.map(e=>'<div class="plan-event-row"><div class="plan-event-dot" style="background:'+PLAN_COLORS[e.type]+'"></div><div class="plan-event-body"><div class="plan-event-title">'+e.title+'</div><div class="plan-event-meta">'+e.date+(e.time?' · '+e.time:'')+'</div></div><div class="plan-event-del" onclick="delPlanEvent(\''+e.id+'\')">✕</div></div>').join('')+'</div>':'');
+    (upcoming.length?'<div style="background:var(--wh);border:1px solid var(--br);border-radius:14px;padding:14px;box-shadow:var(--sh)"><div style="font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Upcoming</div>'+upcoming.map(e=>'<div class="plan-event-row"><div class="plan-event-dot" style="background:'+PLAN_COLORS[e.type]+'"></div><div class="plan-event-body"><div class="plan-event-title">'+e.title+'</div><div class="plan-event-meta">'+e.date+(e.time?' · '+e.time:'')+'</div></div><div style="display:flex;gap:5px;align-items:center"><div class="plan-event-edit" onclick="openPlanEdit(\''+e.id+'\')">✏</div><div class="plan-event-del" onclick="delPlanEvent(\''+e.id+'\')">✕</div></div></div>').join('')+'</div>':'');
 }
 
 // ── EXPOSE GLOBALS ──
@@ -2064,6 +2122,7 @@ window.calShift=calShift;window.calJumpToCurrentMonth=calJumpToCurrentMonth;
 window.calTogglePast=calTogglePast;
 window.setPlanType=setPlanType;window.setPlanView=setPlanView;
 window.plannerAdd=plannerAdd;window.delPlanEvent=delPlanEvent;
+window.openPlanEdit=openPlanEdit;window.savePlanEdit=savePlanEdit;window.delPlanEventFromEdit=delPlanEventFromEdit;
 window.openTripModal=openTripModal;window.saveTrip=saveTrip;
 window.deleteTrip=deleteTrip;window.toggleTrip=toggleTrip;
 window.openDayModal=openDayModal;window.saveDay=saveDay;window.deleteDay=deleteDay;
