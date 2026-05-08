@@ -517,6 +517,47 @@ body{font-family:'Jost',sans-serif;background:var(--cr);color:var(--ink);min-hei
 .flag-toggle{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--ms);border-radius:var(--rs);cursor:pointer;border:1px solid var(--br)}
 .flag-toggle.flagged{background:#fef9ec;border-color:#f59e0b}
 .plan-event-edit{padding:3px 7px;border-radius:4px;border:1px solid var(--br);background:transparent;font-size:11px;color:var(--mu);cursor:pointer;font-family:'Jost',sans-serif}
+.cal-view-tab{padding:8px 16px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--br);background:var(--ms);color:var(--mu);letter-spacing:.3px;transition:all .15s}
+.cal-view-tab.active{background:var(--f);color:#fff;border-color:var(--f)}
+.lp-month-block{background:var(--wh);border:1px solid var(--br);border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:var(--sh)}
+.lp-month-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.lp-month-stats{font-size:11px;color:var(--mu);margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap}
+.lp-stat{display:flex;align-items:center;gap:4px}
+.lp-day-row{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:start;padding:10px 0;border-bottom:1px solid var(--ms);cursor:pointer;transition:background .1s;border-radius:8px}
+.lp-day-row:last-child{border-bottom:none}
+.lp-day-row:active{background:var(--ms)}
+.lp-day-num{text-align:center}
+.lp-day-num-n{font-size:18px;font-weight:600;font-family:'Cormorant Garamond',serif;color:var(--ink);line-height:1}
+.lp-day-num-d{font-size:9px;color:var(--mu);font-weight:500;letter-spacing:.3px;text-transform:uppercase}
+.lp-day-num-n.today-num{color:var(--cal-today-txt);background:var(--cal-today-bg);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.lp-day-pills{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.lp-pill{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;display:inline-flex;align-items:center;gap:4px;max-width:fit-content}
+.lp-pill.morning{background:#fef9ec;color:#92400e}
+.lp-pill.work{background:#f0f9ff;color:#0369a1}
+.lp-pill.travel{background:#f0fdf4;color:#166534}
+.lp-pill.evening{background:#fdf4ff;color:#6b21a8}
+.lp-pill.workout{background:#fff1f2;color:#9f1239}
+.lp-pill.korean{background:#ede9fe;color:#5b21b6}
+.lp-check-area{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.lp-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer;transition:all .15s;background:var(--ms)}
+.lp-check.done{background:#bbf7d0;border-color:#86efac;color:#166534}
+.lp-check.skip{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
+.lp-check-lbl{font-size:8px;color:var(--su);letter-spacing:.2px}
+.lp-note-inp{font-size:11px;color:var(--mu);font-style:italic;margin-top:3px;border:none;background:transparent;font-family:'Jost',sans-serif;width:100%;outline:none;padding:0}
+.lp-note-inp::placeholder{color:var(--su)}
+.lp-day-row.past-day{opacity:.65}
+.lp-progress-bar{height:5px;background:var(--ms);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.lp-progress-fill{height:100%;background:linear-gradient(90deg,#86efac,#4ade80);border-radius:3px;transition:width .4s}
+.lp-rhythm-card{background:var(--mp);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.lp-rhythm-row{display:flex;gap:8px;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--ms);font-size:11px}
+.lp-rhythm-row:last-child{border-bottom:none}
+.lp-rhythm-day{font-weight:600;color:var(--ink);width:70px;flex-shrink:0}
+.lp-rhythm-focus{color:var(--f);font-size:10px;margin-left:auto;font-style:italic}
+.lp-suggest-btn{margin-top:5px;padding:4px 10px;border-radius:20px;border:1.5px solid #c4b5fd;background:#ede9fe;color:#5b21b6;font-size:10px;font-weight:600;cursor:pointer;font-family:'Jost',sans-serif;letter-spacing:.2px;transition:all .15s}
+.lp-suggest-btn:active{filter:brightness(.9)}
+.lp-cal-btn{margin-top:4px;padding:3px 8px;border-radius:6px;border:1.5px solid #bbf7d0;background:#f0fdf4;color:#166534;font-size:10px;font-weight:600;cursor:pointer;font-family:'Jost',sans-serif}
+.lps-card{background:var(--ms);border:1px solid var(--br);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.lps-card:active{background:var(--mp);border-color:var(--ml)}
 </style>
 </head>
 <body>
@@ -580,6 +621,12 @@ body{font-family:'Jost',sans-serif;background:var(--cr);color:var(--ink);min-hei
       <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#fce7f3;border:1px solid #f9a8d4"></div>Today</div>
       <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#fff;border:1px solid #d1d5db;position:relative"><span style="position:absolute;top:-2px;right:-1px;font-size:6px">★</span></div>Key date</div>
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <div class="cal-view-tab active" id="cvt-calendar" onclick="setCalView('calendar')">📅 Calendar</div>
+      <div class="cal-view-tab" id="cvt-lifeplan" onclick="setCalView('lifeplan')">🌿 Life Plan</div>
+    </div>
+
+    <div id="cal-view-calendar">
     <div class="planner-bar">
       <div class="planner-quick-row">
         <input class="planner-input" id="planner-input" placeholder="Add event: 'Team lunch Fri 1pm'" onkeydown="if(event.key==='Enter')plannerAdd()"/>
@@ -612,6 +659,12 @@ body{font-family:'Jost',sans-serif;background:var(--cr);color:var(--ink);min-hei
         <button class="cal-add-star-btn" onclick="openStarModal()">＋ Add key date</button>
       </div>
     </div>
+    </div><!-- end cal-view-calendar -->
+
+    <div id="cal-view-lifeplan" style="display:none">
+      <div id="lifeplan-content"></div>
+    </div>
+
   </div>
 </div>
 
@@ -2120,6 +2173,258 @@ window.saveDayNote=saveDayNote;window.openStarModal=openStarModal;
 window.saveStarredDay=saveStarredDay;window.delStarred=delStarred;
 window.calShift=calShift;window.calJumpToCurrentMonth=calJumpToCurrentMonth;
 window.calTogglePast=calTogglePast;
+// ── LIFE PLAN ──
+const LIFE_PLAN_DATA = [
+  {date:'2026-05-08',day:'Friday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Light cardio / walk'},
+  {date:'2026-05-09',day:'Saturday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-05-10',day:'Sunday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Rest / stretch'},
+  {date:'2026-05-11',day:'Monday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-05-12',day:'Tuesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Cardio / Pilates'},
+  {date:'2026-05-13',day:'Wednesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Strength (Upper Body)'},
+  {date:'2026-05-14',day:'Thursday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Yoga / Mobility'},
+  {date:'2026-05-15',day:'Friday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Light cardio / walk'},
+  {date:'2026-05-16',day:'Saturday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-05-17',day:'Sunday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Rest / stretch'},
+  {date:'2026-05-18',day:'Monday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-05-19',day:'Tuesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Cardio / Pilates'},
+  {date:'2026-05-20',day:'Wednesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Strength (Upper Body)'},
+  {date:'2026-05-21',day:'Thursday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Yoga / Mobility'},
+  {date:'2026-05-22',day:'Friday',morning:'Work / Routine',work:'Travel',evening:'Vietnam Trip (Family)',workout:'Light cardio / walk'},
+  {date:'2026-05-23',day:'Saturday',morning:'Work / Routine',work:'Travel',evening:'Vietnam Trip (Family)',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-05-24',day:'Sunday',morning:'Work / Routine',work:'Travel',evening:'Vietnam Trip (Family)',workout:'Rest / stretch'},
+  {date:'2026-05-25',day:'Monday',morning:'Work / Routine',work:'Travel',evening:'Vietnam Trip (Family)',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-05-26',day:'Tuesday',morning:'Work / Routine',work:'Travel',evening:'Vietnam Trip (Family)',workout:'Cardio / Pilates'},
+  {date:'2026-05-27',day:'Wednesday',morning:'Work / Routine',work:'Travel',evening:'Vietnam Trip (Family)',workout:'Strength (Upper Body)'},
+  {date:'2026-05-28',day:'Thursday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Yoga / Mobility'},
+  {date:'2026-05-29',day:'Friday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Light cardio / walk'},
+  {date:'2026-05-30',day:'Saturday',morning:'Work / Routine',work:'Work/Travel',evening:'Partner Business Travel',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-05-31',day:'Sunday',morning:'Work / Routine',work:'Work/Travel',evening:'Partner Business Travel',workout:'Rest / stretch'},
+  {date:'2026-06-01',day:'Monday',morning:'Work / Routine',work:'Work/Travel',evening:'Korean Class',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-06-02',day:'Tuesday',morning:'Work / Routine',work:'Work/Travel',evening:'Partner Business Travel',workout:'Cardio / Pilates'},
+  {date:'2026-06-03',day:'Wednesday',morning:'Work / Routine',work:'Work/Travel',evening:'Korean Class',workout:'Strength (Upper Body)'},
+  {date:'2026-06-04',day:'Thursday',morning:'Work / Routine',work:'Work/Travel',evening:'Partner Business Travel',workout:'Yoga / Mobility'},
+  {date:'2026-06-05',day:'Friday',morning:'Work / Routine',work:'Work/Travel',evening:'Partner Business Travel',workout:'Light cardio / walk'},
+  {date:'2026-06-06',day:'Saturday',morning:'Work / Routine',work:'Work/Travel',evening:'Partner Business Travel',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-06-07',day:'Sunday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Rest / stretch'},
+  {date:'2026-06-08',day:'Monday',morning:'Work / Routine',work:'Work',evening:'Korean Class',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-06-09',day:'Tuesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Cardio / Pilates'},
+  {date:'2026-06-10',day:'Wednesday',morning:'Work / Routine',work:'Work',evening:'Korean Class',workout:'Strength (Upper Body)'},
+  {date:'2026-06-11',day:'Thursday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Yoga / Mobility'},
+  {date:'2026-06-12',day:'Friday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Light cardio / walk'},
+  {date:'2026-06-13',day:'Saturday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-06-14',day:'Sunday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Rest / stretch'},
+  {date:'2026-06-15',day:'Monday',morning:'Work / Routine',work:'Work',evening:'Korean Class',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-06-16',day:'Tuesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Cardio / Pilates'},
+  {date:'2026-06-17',day:'Wednesday',morning:'Work / Routine',work:'Work',evening:'Korean Class',workout:'Strength (Upper Body)'},
+  {date:'2026-06-18',day:'Thursday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Yoga / Mobility'},
+  {date:'2026-06-19',day:'Friday',morning:'Work / Routine',work:'Travel',evening:'Bali Girls Trip',workout:'Light cardio / walk'},
+  {date:'2026-06-20',day:'Saturday',morning:'Work / Routine',work:'Travel',evening:'Bali Girls Trip',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-06-21',day:'Sunday',morning:'Work / Routine',work:'Travel',evening:'Bali Girls Trip',workout:'Rest / stretch'},
+  {date:'2026-06-22',day:'Monday',morning:'Work / Routine',work:'Travel',evening:'Korean Class',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-06-23',day:'Tuesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Cardio / Pilates'},
+  {date:'2026-06-24',day:'Wednesday',morning:'Work / Routine',work:'Work',evening:'Korean Class',workout:'Strength (Upper Body)'},
+  {date:'2026-06-25',day:'Thursday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Yoga / Mobility'},
+  {date:'2026-06-26',day:'Friday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Light cardio / walk'},
+  {date:'2026-06-27',day:'Saturday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Active exploration (steps / outdoor)'},
+  {date:'2026-06-28',day:'Sunday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Rest / stretch'},
+  {date:'2026-06-29',day:'Monday',morning:'Work / Routine',work:'Work',evening:'Korean Class',workout:'Strength (Lower Body + Core)'},
+  {date:'2026-06-30',day:'Tuesday',morning:'Work / Routine',work:'Work',evening:'Flexible / Couple / Social',workout:'Cardio / Pilates'},
+];
+
+const WEEKLY_RHYTHM=[
+  {day:'Monday',structure:'Work + Strength + Korean (from June)',focus:'Discipline / Self-growth'},
+  {day:'Tuesday',structure:'Work + Cardio + Social or Couple',focus:'Balance'},
+  {day:'Wednesday',structure:'Work + Strength + Korean',focus:'Identity building'},
+  {day:'Thursday',structure:'Work + Yoga + Calm evening',focus:'Grounding'},
+  {day:'Friday',structure:'Social / Date night',focus:'Connection + novelty'},
+  {day:'Saturday',structure:'Exploration day',focus:'Adventure / aliveness'},
+  {day:'Sunday',structure:'Reset + half solo + half couple',focus:'Recovery + independence'},
+];
+
+function lpEnsure(){if(!S.lifePlan)S.lifePlan={};}
+
+function toggleLpCheck(date,field,val){
+  lpEnsure();
+  if(!S.lifePlan[date])S.lifePlan[date]={};
+  const cur=S.lifePlan[date][field];
+  S.lifePlan[date][field]=cur===val?null:val;
+  saveAll();renderLifePlan();
+}
+
+function saveLpNote(date,val){
+  lpEnsure();
+  if(!S.lifePlan[date])S.lifePlan[date]={};
+  S.lifePlan[date].note=val;
+  saveAll();
+}
+
+function setCalView(v){
+  document.getElementById('cal-view-calendar').style.display=v==='calendar'?'block':'none';
+  document.getElementById('cal-view-lifeplan').style.display=v==='lifeplan'?'block':'none';
+  document.getElementById('cvt-calendar').classList.toggle('active',v==='calendar');
+  document.getElementById('cvt-lifeplan').classList.toggle('active',v==='lifeplan');
+  if(v==='lifeplan')renderLifePlan();
+}
+
+function renderLifePlan(){
+  lpEnsure();
+  const el=document.getElementById('lifeplan-content');if(!el)return;
+  const today=new Date().toISOString().split('T')[0];
+  const months={};
+  LIFE_PLAN_DATA.forEach(d=>{const m=d.date.substring(0,7);if(!months[m])months[m]=[];months[m].push(d);});
+  let html='';
+  html+='<div class="lp-rhythm-card"><div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Weekly Rhythm</div>';
+  WEEKLY_RHYTHM.forEach(r=>{html+='<div class="lp-rhythm-row"><div class="lp-rhythm-day">'+r.day+'</div><div style="flex:1;color:var(--ink);font-size:11px">'+r.structure+'</div><div class="lp-rhythm-focus">'+r.focus+'</div></div>';});
+  html+='</div>';
+  Object.entries(months).forEach(([m,days])=>{
+    const[yr,mn]=m.split('-');
+    const mNames=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const mLabel=mNames[+mn]+' '+yr;
+    const pastDays=days.filter(d=>d.date<=today);
+    const doneDays=pastDays.filter(d=>S.lifePlan[d.date]&&S.lifePlan[d.date].workout==='done');
+    const pct=pastDays.length?Math.round(doneDays.length/pastDays.length*100):0;
+    html+='<div class="lp-month-block">';
+    html+='<div class="lp-month-title">'+mLabel+'</div>';
+    html+='<div class="lp-month-stats">';
+    html+='<div class="lp-stat">📅 '+days.length+' days planned</div>';
+    if(pastDays.length)html+='<div class="lp-stat">💪 '+doneDays.length+'/'+pastDays.length+' workouts</div>';
+    const travelDays=days.filter(d=>d.work==='Travel'||d.work==='Work/Travel');
+    if(travelDays.length)html+='<div class="lp-stat">✈️ '+travelDays.length+' travel days</div>';
+    html+='</div>';
+    if(pastDays.length)html+='<div class="lp-progress-bar"><div class="lp-progress-fill" style="width:'+pct+'%"></div></div>';
+    days.forEach(d=>{
+      const isPast=d.date<today;
+      const isToday=d.date===today;
+      const lp=S.lifePlan[d.date]||{};
+      const dayNum=+d.date.split('-')[2];
+      const dayShort=d.day.substring(0,3).toUpperCase();
+      const isTravel=d.work==='Travel'||d.work==='Work/Travel';
+      const hasKorean=d.evening==='Korean Class';
+      const isSocial=d.evening==='Flexible / Couple / Social';
+      const isExplore=d.workout==='Active exploration (steps / outdoor)';
+      const isDate=d.day==='Friday'||d.day==='Saturday';
+      // check if already added to planner calendar
+      const alreadyAdded=(S.plannerEvents||[]).some(e=>e.date===d.date&&e.lpLinked);
+      const calLinkedEvents=(S.plannerEvents||[]).filter(e=>e.date===d.date&&e.lpLinked);
+      html+='<div class="lp-day-row'+(isPast?' past-day':'')+'">';
+      html+='<div class="lp-day-num"><div class="lp-day-num-n'+(isToday?' today-num':'')+'">'+dayNum+'</div><div class="lp-day-num-d">'+dayShort+'</div></div>';
+      html+='<div class="lp-day-pills">';
+      if(isTravel)html+='<div class="lp-pill travel">✈️ '+d.evening+'</div>';
+      else if(hasKorean)html+='<div class="lp-pill korean">🇰🇷 Korean Class</div>';
+      else html+='<div class="lp-pill evening">🌙 '+d.evening+'</div>';
+      html+='<div class="lp-pill workout">💪 '+d.workout+'</div>';
+      // show cross-linked calendar events
+      calLinkedEvents.forEach(ev=>{html+='<div class="lp-pill" style="background:#f0fdf4;color:#166534;cursor:pointer" onclick="setCalView(\'calendar\')">📅 '+ev.title+'</div>';});
+      // suggestion button for social/explore days
+      if((isSocial||isExplore)&&!isPast){
+        const ctx=isDate?'date night':'exploration';
+        html+='<button class="lp-suggest-btn" onclick="openLpSuggest(\''+d.date+'\',\''+d.day+'\',\''+ctx+'\')">✨ Get ideas</button>';
+      }
+      if(lp.note||!isPast)html+='<input class="lp-note-inp" placeholder="Add note…" value="'+(lp.note||'').replace(/"/g,'&quot;')+'" onchange="saveLpNote(\''+d.date+'\',this.value)" onclick="event.stopPropagation()"/>';
+      html+='</div>';
+      html+='<div class="lp-check-area">';
+      const wDone=lp.workout==='done';const wSkip=lp.workout==='skip';
+      html+='<div style="display:flex;gap:4px">';
+      html+='<div class="lp-check'+(wDone?' done':'')+'" onclick="toggleLpCheck(\''+d.date+'\',\'workout\',\'done\')" title="Done">✓</div>';
+      html+='<div class="lp-check'+(wSkip?' skip':'')+'" onclick="toggleLpCheck(\''+d.date+'\',\'workout\',\'skip\')" title="Skip">✕</div>';
+      html+='</div><div class="lp-check-lbl">workout</div>';
+      if(!isPast&&!alreadyAdded&&(isSocial||hasKorean||isTravel)){
+        html+='<button class="lp-cal-btn" onclick="quickAddToCalendar(\''+d.date+'\',\''+d.day+'\',\''+d.evening.replace(/'/g,"\\'")+'\')" title="Add to Calendar">📅+</button>';
+      }
+      if(alreadyAdded){html+='<div style="font-size:9px;color:#16a34a;margin-top:2px">📅 Added</div>';}
+      html+='</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+// ── LP SUGGEST MODAL ──
+let _lpSuggestDate='',_lpSuggestDay='',_lpSuggestCtx='';
+function openLpSuggest(date,day,ctx){
+  _lpSuggestDate=date;_lpSuggestDay=day;_lpSuggestCtx=ctx;
+  const[y,m,d]=date.split('-');
+  const mNames=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('lps-title').textContent=day+', '+mNames[+m]+' '+(+d);
+  document.getElementById('lps-ctx').textContent=ctx==='date night'?'💑 Date Night Ideas':'🗺 Exploration Ideas';
+  document.getElementById('lps-results').innerHTML='<div style="color:var(--mu);font-size:12px;text-align:center;padding:20px">Tap "Get Suggestions" to start ✨</div>';
+  document.getElementById('lps-add-date').value=date;
+  document.getElementById('lps-add-title').value='';
+  openModal('lp-suggest-modal');
+}
+
+async function getLpSuggestions(){
+  const ctx=_lpSuggestCtx;
+  const btn=document.getElementById('lps-get-btn');
+  btn.textContent='Loading…';btn.disabled=true;
+  document.getElementById('lps-results').innerHTML='<div style="color:var(--mu);font-size:12px;text-align:center;padding:20px">✨ Getting ideas for Singapore…</div>';
+  const prompt=ctx==='date night'
+    ?'Suggest 5 specific date night ideas in Singapore for a couple. Mix fine dining, casual, and experience-based. For each give: name, area/neighbourhood, why it\'s special, approx cost per couple in SGD. Format as JSON array: [{name,area,why,cost,type}]. Only JSON, no markdown.'
+    :'Suggest 5 Saturday exploration ideas in Singapore — mix of neighbourhoods, nature, markets, hidden gems. For each: name, area, what to do there, best time, approx cost in SGD. Format as JSON array: [{name,area,what,time,cost}]. Only JSON, no markdown.';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+    const ideas=JSON.parse(text);
+    let html='';
+    ideas.forEach((idea,i)=>{
+      const title=idea.name||'';
+      const area=idea.area||'';
+      const detail=idea.why||idea.what||'';
+      const cost=idea.cost||'';
+      const type=idea.type||'';
+      html+='<div class="lps-card" onclick="selectLpSuggestion(\''+title.replace(/'/g,"\\'")+(area?' · '+area:'')+'\')">';
+      html+='<div style="display:flex;align-items:start;justify-content:space-between;gap:8px">';
+      html+='<div><div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px">'+title+'</div>';
+      html+='<div style="font-size:10px;color:var(--f);font-weight:500">📍 '+area+(type?' · '+type:'')+'</div></div>';
+      html+='<div style="font-size:11px;color:var(--mu);white-space:nowrap;flex-shrink:0">~'+cost+'</div>';
+      html+='</div>';
+      html+='<div style="font-size:11px;color:var(--mu);margin-top:5px;line-height:1.5">'+detail+'</div>';
+      html+='<div style="font-size:10px;color:var(--f);margin-top:6px;font-weight:500">Tap to use this idea →</div>';
+      html+='</div>';
+    });
+    document.getElementById('lps-results').innerHTML=html;
+  }catch(e){
+    document.getElementById('lps-results').innerHTML='<div style="color:#dc2626;font-size:12px;padding:12px">Could not load suggestions. Try again.</div>';
+  }
+  btn.textContent='🔄 Refresh ideas';btn.disabled=false;
+}
+
+function selectLpSuggestion(title){
+  document.getElementById('lps-add-title').value=title;
+  document.getElementById('lps-add-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function addLpEventToCalendar(){
+  const title=document.getElementById('lps-add-title').value.trim();
+  const date=document.getElementById('lps-add-date').value;
+  const time=document.getElementById('lps-add-time').value.trim();
+  if(!title||!date){alert('Add a title and date');return;}
+  if(!S.plannerEvents)S.plannerEvents=[];
+  S.plannerEvents.push({id:'lpe_'+Date.now(),title,date,time,type:'flexible',lpLinked:true,created:new Date().toISOString().split('T')[0]});
+  saveAll();closeModal('lp-suggest-modal');renderLifePlan();renderCalendar();
+  toast('📅 Added to Calendar: '+title);
+}
+
+function quickAddToCalendar(date,day,evening){
+  if(!S.plannerEvents)S.plannerEvents=[];
+  if((S.plannerEvents||[]).some(e=>e.date===date&&e.lpLinked))return;
+  S.plannerEvents.push({id:'lpe_'+Date.now(),title:evening,date,time:'',type:'intentional',lpLinked:true,created:new Date().toISOString().split('T')[0]});
+  saveAll();renderLifePlan();renderCalendar();
+  toast('📅 Added to Calendar');
+}
+
+window.openLpSuggest=openLpSuggest;
+window.getLpSuggestions=getLpSuggestions;
+window.selectLpSuggestion=selectLpSuggestion;
+window.addLpEventToCalendar=addLpEventToCalendar;
+window.quickAddToCalendar=quickAddToCalendar;
+
+window.setCalView=setCalView;
+window.toggleLpCheck=toggleLpCheck;
+window.saveLpNote=saveLpNote;
+
 window.setPlanType=setPlanType;window.setPlanView=setPlanView;
 window.plannerAdd=plannerAdd;window.delPlanEvent=delPlanEvent;
 window.openPlanEdit=openPlanEdit;window.savePlanEdit=savePlanEdit;window.delPlanEventFromEdit=delPlanEventFromEdit;
@@ -2166,5 +2471,28 @@ window.addEventListener('load',()=>{
   gotoPage('calendar');
 });
 </script>
+<div class="ovl" id="lp-suggest-modal">
+  <div class="mdl" style="max-height:90vh;overflow-y:auto">
+    <div class="mdl-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="mdl-title" id="lps-title">Date Night Ideas</div>
+      <div id="lps-ctx" style="font-size:11px;color:var(--f);font-weight:600"></div>
+    </div>
+    <button id="lps-get-btn" class="btn-p" style="width:100%;margin-bottom:14px" onclick="getLpSuggestions()">✨ Get Suggestions for Singapore</button>
+    <div id="lps-results"></div>
+    <div id="lps-add-wrap" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--br)">
+      <div style="font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Add to Calendar</div>
+      <div class="fld"><label>What</label><input id="lps-add-title" placeholder="e.g. Date night at Odette · Marina Bay"/></div>
+      <div class="fld-r">
+        <div class="fld"><label>Date</label><input type="date" id="lps-add-date"/></div>
+        <div class="fld"><label>Time</label><input id="lps-add-time" placeholder="e.g. 7pm"/></div>
+      </div>
+      <div class="mdl-foot" style="margin-top:0">
+        <button class="btn-c" onclick="closeModal('lp-suggest-modal')">Cancel</button>
+        <button class="btn-p" onclick="addLpEventToCalendar()">📅 Add to Calendar</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
